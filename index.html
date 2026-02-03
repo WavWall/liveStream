@@ -58,10 +58,8 @@
                 // Get room URL from query parameter
                 const urlParams = new URLSearchParams(window.location.search);
                 const roomUrl = urlParams.get('room') || 'https://reetune.daily.co/Test';
-                const layout = urlParams.get('layout') || 'single-speaker';
                 
                 log('Room URL: ' + roomUrl);
-                log('Layout: ' + layout);
                 log('Creating Daily frame...');
 
                 // Create full-screen call frame
@@ -86,7 +84,6 @@
                 // Join with optimized settings for streaming
                 callFrame.join({ 
                     url: roomUrl,
-                    layout: layout,
                     theme: {
                         colors: {
                             accent: '#FF006B',
