@@ -22,9 +22,6 @@
         #call-frame {
             width: 100vw;
             height: 100vh;
-            position: absolute;
-            top: 0;
-            left: 0;
         }
         #debug {
             position: fixed;
@@ -45,87 +42,87 @@
     <div id="call-frame"></div>
 
     <script>
-        const debug = document.getElementById('debug');
-        
-        function log(msg) {
-            console.log(msg);
-            debug.innerHTML += '<br>' + msg;
-        }
-
-        try {
-            log('Script started');
+        // Wait for DOM to be ready
+        window.addEventListener('DOMContentLoaded', function() {
+            const debug = document.getElementById('debug');
             
-            // Get room URL from query parameter
-            const urlParams = new URLSearchParams(window.location.search);
-            const roomUrl = urlParams.get('room') || 'https://reetune.daily.co/Test';
-            const layout = urlParams.get('layout') || 'single-speaker';
-            
-            log('Room URL: ' + roomUrl);
-            log('Layout: ' + layout);
-            log('Creating Daily frame...');
+            function log(msg) {
+                console.log(msg);
+                debug.innerHTML += '<br>' + msg;
+            }
 
-            // Create full-screen call frame
-            const callFrame = window.DailyIframe.createFrame('call-frame', {
-                showLeaveButton: true,
-                showFullscreenButton: false,
-                showLocalVideo: true,
-                showParticipantsBar: false,
-                iframeStyle: {
-                    width: '100%',
-                    height: '100%',
-                    border: '0',
-                    position: 'absolute',
-                    top: '0',
-                    left: '0',
-                }
-            });
+            try {
+                log('Script started');
+                log('DOM loaded');
+                
+                // Get room URL from query parameter
+                const urlParams = new URLSearchParams(window.location.search);
+                const roomUrl = urlParams.get('room') || 'https://reetune.daily.co/Test';
+                const layout = urlParams.get('layout') || 'single-speaker';
+                
+                log('Room URL: ' + roomUrl);
+                log('Layout: ' + layout);
+                log('Creating Daily frame...');
 
-            log('Daily frame created');
-            log('Attempting to join...');
-
-            // Join with optimized settings for streaming
-            callFrame.join({ 
-                url: roomUrl,
-                layout: layout,
-                theme: {
-                    colors: {
-                        accent: '#FF006B',
-                        accentText: '#FFFFFF',
-                        background: '#000000',
-                        backgroundAccent: '#1a1a1a',
-                        baseText: '#FFFFFF',
+                // Create full-screen call frame
+                const callFrame = window.DailyIframe.createFrame(
+                    document.getElementById('call-frame'),
+                    {
+                        showLeaveButton: true,
+                        showFullscreenButton: false,
+                        showLocalVideo: true,
+                        showParticipantsBar: false,
+                        iframeStyle: {
+                            width: '100%',
+                            height: '100%',
+                            border: '0',
+                        }
                     }
-                }
-            }).then(() => {
-                log('✅ Successfully joined!');
-                // Hide debug after 3 seconds
-                setTimeout(() => {
-                    debug.style.display = 'none';
-                }, 3000);
-            }).catch((error) => {
-                log('❌ Join error: ' + error.message);
-            });
+                );
 
-            // Event listeners
-            callFrame.on('joined-meeting', (event) => {
-                log('Event: Joined meeting');
-            });
+                log('Daily frame created');
+                log('Attempting to join...');
 
-            callFrame.on('left-meeting', (event) => {
-                log('Event: Left meeting');
-            });
+                // Join with optimized settings for streaming
+                callFrame.join({ 
+                    url: roomUrl,
+                    layout: layout,
+                    theme: {
+                        colors: {
+                            accent: '#FF006B',
+                            accentText: '#FFFFFF',
+                            background: '#000000',
+                            backgroundAccent: '#1a1a1a',
+                            baseText: '#FFFFFF',
+                        }
+                    }
+                }).then(() => {
+                    log('✅ Successfully joined!');
+                    // Hide debug after 3 seconds
+                    setTimeout(() => {
+                        debug.style.display = 'none';
+                    }, 3000);
+                }).catch((error) => {
+                    log('❌ Join error: ' + error.message);
+                });
 
-            callFrame.on('error', (event) => {
-                log('❌ Event error: ' + JSON.stringify(event));
-            });
-            
-            callFrame.on('loading', (event) => {
-                log('Loading: ' + event.action);
-            });
+                // Event listeners
+                callFrame.on('joined-meeting', (event) => {
+                    log('Event: Joined meeting');
+                });
 
-        } catch (error) {
-            log('❌ Fatal error: ' + error.message);
-        }
+                callFrame.on('left-meeting', (event) => {
+                    log('Event: Left meeting');
+                });
+
+                callFrame.on('error', (event) => {
+                    log('❌ Event error: ' + JSON.stringify(event));
+                });
+
+            } catch (error) {
+                log('❌ Fatal error: ' + error.message);
+            }
+        });
     </script>
 </body>
 </html>
