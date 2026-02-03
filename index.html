@@ -2,24 +2,35 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daily.co Call</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Live Stream</title>
     <script src="https://unpkg.com/@daily-co/daily-js"></script>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
-        body {
-            width: 100vw;
-            height: 100vh;
-            overflow: hidden;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        }
-        #call-frame {
+        html, body {
             width: 100%;
             height: 100%;
+            overflow: hidden;
+            position: fixed;
+            background: #000;
+        }
+        #call-frame {
+            width: 100vw;
+            height: 100vh;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        /* Hide address bar on mobile */
+        @media screen and (max-width: 768px) {
+            body {
+                height: 100dvh; /* dynamic viewport height for mobile */
+            }
         }
     </style>
 </head>
@@ -30,24 +41,37 @@
         // Get room URL from query parameter
         const urlParams = new URLSearchParams(window.location.search);
         const roomUrl = urlParams.get('room') || 'https://reetune.daily.co/Test';
+        const layout = urlParams.get('layout') || 'single-speaker';
 
-        // Create the Daily call frame
+        // Create full-screen call frame (Instagram-style)
         const callFrame = window.DailyIframe.createFrame('call-frame', {
             showLeaveButton: true,
-            showFullscreenButton: true,
+            showFullscreenButton: false,
             showLocalVideo: true,
-            showParticipantsBar: true,
+            showParticipantsBar: false,
             iframeStyle: {
                 width: '100%',
                 height: '100%',
                 border: '0',
+                position: 'absolute',
+                top: '0',
+                left: '0',
             }
         });
 
-        // Join the call
+        // Join with optimized settings for streaming
         callFrame.join({ 
             url: roomUrl,
-            layout: layout
+            layout: layout,
+            theme: {
+                colors: {
+                    accent: '#FF006B',
+                    accentText: '#FFFFFF',
+                    background: '#000000',
+                    backgroundAccent: '#1a1a1a',
+                    baseText: '#FFFFFF',
+                }
+            }
         });
 
         // Event listeners
@@ -57,6 +81,10 @@
 
         callFrame.on('left-meeting', (event) => {
             console.log('Left meeting');
+        });
+
+        callFrame.on('error', (event) => {
+            console.error('Error:', event);
         });
     </script>
 </body>
