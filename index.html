@@ -42,7 +42,6 @@
     <div id="call-frame"></div>
 
     <script>
-        // Wait for DOM to be ready
         window.addEventListener('DOMContentLoaded', function() {
             const debug = document.getElementById('debug');
             
@@ -53,16 +52,13 @@
 
             try {
                 log('Script started');
-                log('DOM loaded');
                 
-                // Get room URL from query parameter
                 const urlParams = new URLSearchParams(window.location.search);
                 const roomUrl = urlParams.get('room') || 'https://reetune.daily.co/Test';
                 
                 log('Room URL: ' + roomUrl);
                 log('Creating Daily frame...');
 
-                // Create full-screen call frame
                 const callFrame = window.DailyIframe.createFrame(
                     document.getElementById('call-frame'),
                     {
@@ -78,24 +74,12 @@
                     }
                 );
 
-                log('Daily frame created');
-                log('Attempting to join...');
+                log('Daily frame created, joining room...');
 
-                // Join with optimized settings for streaming
                 callFrame.join({ 
-                    url: roomUrl,
-                    theme: {
-                        colors: {
-                            accent: '#FF006B',
-                            accentText: '#FFFFFF',
-                            background: '#000000',
-                            backgroundAccent: '#1a1a1a',
-                            baseText: '#FFFFFF',
-                        }
-                    }
+                    url: roomUrl
                 }).then(() => {
                     log('✅ Successfully joined!');
-                    // Hide debug after 3 seconds
                     setTimeout(() => {
                         debug.style.display = 'none';
                     }, 3000);
@@ -103,21 +87,16 @@
                     log('❌ Join error: ' + error.message);
                 });
 
-                // Event listeners
-                callFrame.on('joined-meeting', (event) => {
-                    log('Event: Joined meeting');
-                });
-
-                callFrame.on('left-meeting', (event) => {
-                    log('Event: Left meeting');
+                callFrame.on('joined-meeting', () => {
+                    log('Joined meeting event');
                 });
 
                 callFrame.on('error', (event) => {
-                    log('❌ Event error: ' + JSON.stringify(event));
+                    log('❌ Error: ' + JSON.stringify(event));
                 });
 
             } catch (error) {
-                log('❌ Fatal error: ' + error.message);
+                log('❌ Fatal: ' + error.message);
             }
         });
     </script>
