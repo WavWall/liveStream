@@ -30,7 +30,6 @@
         // Get room URL from query parameter
         const urlParams = new URLSearchParams(window.location.search);
         const roomUrl = urlParams.get('room') || 'https://reetune.daily.co/Test';
-        const layout = urlParams.get('layout') || 'single-speaker';
 
         // Create the Daily call frame
         const callFrame = window.DailyIframe.createFrame('call-frame', {
